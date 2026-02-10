@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enchanted Portfolio - Shaders & Unreal</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap');
+        
+        :root {
+            --enchanted-purple: #8b5cf6;
+            --mystic-blue: #3b82f6;
+            --fairy-pink: #ec4899;
+            --golden-glow: #fbbf24;
+            --deep-night: #0f0a1f;
+            --twilight: #1a1333;
+            --shimmer: #e0d5ff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: var(--deep-night);
+            color: var(--shimmer);
+            overflow-x: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"><circle cx="10" cy="10" r="3" fill="%23fbbf24" opacity="0.7"/><circle cx="10" cy="10" r="1" fill="%23fff"/></svg>') 10 10, auto;
+        }
+        
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .magical-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(3rem, 10vw, 7rem);
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--golden-glow), var(--fairy-pink), var(--enchanted-purple), var(--mystic-blue));
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmerGradient 8s ease infinite, fadeInDown 1.5s ease;
+            text-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
+            letter-spacing: 0.05em;
+            margin-bottom: 1rem;
+        }
+        
+        .subtitle {
+            font-size: clamp(1.2rem, 3vw, 1.8rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--shimmer);
+            animation: fadeInUp 1.5s ease 0.5s backwards;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        
+        .mystical-tagline {
+            font-size: clamp(0.9rem, 2vw, 1.1rem);
+            color: var(--golden-glow);
+            animation: fadeInUp 1.5s ease 1s backwards;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-family: 'Cinzel', serif;
+        }
+        
+        /* Navigation Orbs */
+        .nav-orbs {
+            position: fixed;
+            right: 3rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .orb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, var(--golden-glow), var(--enchanted-purple));
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            box-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+        }
+        
+        .orb::before {
+            content: '';
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 1px solid var(--golden-glow);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        
+        .orb:hover {
+            transform: scale(1.5);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.8);
+        }
+        
+        .orb:hover::before {
+            opacity: 0.5;
+        }
+        
+        .orb.active {
+            width: 18px;
+            height: 18px;
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.8);
+        }
+        
+        .orb.active::before {
+            opacity: 1;
+        }
+        
+        /* Sections */
+        section {
+            min-height: 100vh;
+            padding: 6rem 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        
+        .section-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, var(--fairy-pink), var(--enchanted-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--golden-glow), transparent);
+            box-shadow: 0 0 10px var(--golden-glow);
+        }
+        
+        /* Portfolio Grid */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            width: 100%;
+            margin-top: 2rem;
+        }
+        
+        .project-card {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(251, 191, 36, 0.15), transparent 50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .project-card:hover::before {
+            opacity: 1;
+        }
+        
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--golden-glow);
+            box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3), 0 0 40px rgba(251, 191, 36, 0.2);
+        }
+        
+        .project-card h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--golden-glow);
+        }
+        
+        .project-card p {
+            color: var(--shimmer);
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        
+        .project-tag {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+            margin-right: 0.5rem;
+            color: var(--golden-glow);
+            font-family: 'Cinzel', serif;
+        }
+        
+        /* About Section */
+        .about-content {
+            max-width: 800px;
+            text-align: center;
+            font-size: 1.3rem;
+            line-height: 2;
+            color: var(--shimmer);
+        }
+        
+        .about-content p {
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Skills Constellation */
+        .skills-constellation {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: center;
+            max-width: 900px;
+            margin-top: 3rem;
+        }
+        
+        .skill-star {
+            padding: 1rem 2rem;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.2), transparent);
+            border: 2px solid var(--enchanted-purple);
+            border-radius: 50px;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            color: var(--shimmer);
+            position: relative;
+            transition: all 0.4s;
+            cursor: pointer;
+        }
+        
+        .skill-star::before {
+            content: '✦';
+            position: absolute;
+            left: 10px;
+            color: var(--golden-glow);
+            font-size: 1.2rem;
+        }
+        
+        .skill-star:hover {
+            transform: scale(1.1) rotate(5deg);
+            border-color: var(--golden-glow);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+        }
+        
+        /* Contact Section */
+        .contact-links {
+            display: flex;
+            gap: 2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .contact-link {
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, var(--enchanted-purple), var(--mystic-blue));
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .contact-link::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+        
+        .contact-link:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .contact-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 40px rgba(139, 92, 246, 0.5);
+        }
+        
+        /* Animations */
+        @keyframes shimmerGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .scroll-indicator::before {
+            content: '⟱';
+            font-size: 2rem;
+            color: var(--golden-glow);
+            opacity: 0.7;
+        }
+
+        .project-card[data-link] {
+            cursor: pointer;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-orbs {
+                right: 1rem;
+            }
+            
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .skills-constellation {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    
+    <div class="nav-orbs">
+        <div class="orb active" data-section="0"></div>
+        <div class="orb" data-section="1"></div>
+        <div class="orb" data-section="2"></div>
+        <div class="orb" data-section="3"></div>
+        <div class="orb" data-section="4"></div>
+    </div>
+    
+    <div class="content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h1 class="magical-title">Realm of Wonders</h1>
+            <p class="subtitle">Where Shaders Meet Enchantment</p>
+            <p class="mystical-tagline">Technical Artist & Unreal Sorcerer</p>
+            <div class="scroll-indicator"></div>
+        </section>
+        
+        <!-- Shaders Portfolio -->
+        <section id="shaders">
+            <h2 class="section-title">Shader Spellbook</h2>
+            <div class="portfolio-grid">
+                <div class="project-card" data-link="./viza656/index.html">
+                    <h3>VIZA 656 Image Synthesis</h3>
+                    <p>Texas A&M Course mainly focused on shader creation</p>
+                    <span class="project-tag">WebGL/WebGPU</span>
+                    <span class="project-tag">ThreeJS</span>
+                </div>
+                <div class="project-card">
+                    <h3>Ethereal Water Shader</h3>
+                    <p>Dynamic caustics and volumetric fog creating mystical underwater realms with real-time reflections and refraction.</p>
+                    <span class="project-tag">HLSL</span>
+                    <span class="project-tag">Raymarching</span>
+                </div>
+                <div class="project-card">
+                    <h3>Celestial Portal</h3>
+                    <p>Interdimensional gateway with swirling energy patterns, particle distortion, and temporal displacement effects.</p>
+                    <span class="project-tag">GLSL</span>
+                    <span class="project-tag">Compute</span>
+                </div>
+                <div class="project-card">
+                    <h3>Crystal Formations</h3>
+                    <p>Procedural gem generation with subsurface scattering, chromatic aberration, and prismatic light dispersion.</p>
+                    <span class="project-tag">Material</span>
+                    <span class="project-tag">PBR</span>
+                </div>
+                <div class="project-card">
+                    <h3>Aurora Borealis</h3>
+                    <p>Real-time atmospheric phenomenon simulation with layered noise functions and color gradients.</p>
+                    <span class="project-tag">Sky Shader</span>
+                    <span class="project-tag">Atmospheric</span>
+                </div>
+                <div class="project-card">
+                    <h3>Magical Runes</h3>
+                    <p>Glowing sigil system with animated energy flows, emission maps, and interactive spell-casting effects.</p>
+                    <span class="project-tag">VFX</span>
+                    <span class="project-tag">Niagara</span>
+                </div>
+                <div class="project-card">
+                    <h3>Enchanted Forest</h3>
+                    <p>Bioluminescent vegetation with animated glow, wind interaction, and season-based material blending.</p>
+                    <span class="project-tag">Foliage</span>
+                    <span class="project-tag">WorldAligned</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Unreal Projects -->
+        <section id="unreal">
+            <h2 class="section-title">Unreal Chronicles</h2>
+            <div class="portfolio-grid">
+                <div class="project-card">
+                    <h3>Dragon's Lair</h3>
+                    <p>Complete fantasy environment with dynamic lighting, volumetric fog, and interactive treasure systems built in Unreal Engine 5.</p>
+                    <span class="project-tag">UE5</span>
+                    <span class="project-tag">Lumen</span>
+                    <span class="project-tag">Nanite</span>
+                </div>
+                <div class="project-card">
+                    <h3>Sorcerer's Tower</h3>
+                    <p>Vertical gameplay space featuring magical laboratories, floating platforms, and arcane puzzle mechanics.</p>
+                    <span class="project-tag">Blueprint</span>
+                    <span class="project-tag">Level Design</span>
+                </div>
+                <div class="project-card">
+                    <h3>Fae Wilderness</h3>
+                    <p>Open-world biome with procedural foliage, creature AI, and day-night cycle affecting magical properties.</p>
+                    <span class="project-tag">PCG</span>
+                    <span class="project-tag">Landscape</span>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Skills -->
+        <section id="skills">
+            <h2 class="section-title">Arsenal of Magic</h2>
+            <div class="skills-constellation">
+                <div class="skill-star">Unreal Engine 5</div>
+                <div class="skill-star">HLSL Shaders</div>
+                <div class="skill-star">GLSL</div>
+                <div class="skill-star">Niagara VFX</div>
+                <div class="skill-star">Material Editor</div>
+                <div class="skill-star">Blueprint</div>
+                <div class="skill-star">C++</div>
+                <div class="skill-star">Houdini</div>
+                <div class="skill-star">Substance Designer</div>
+                <div class="skill-star">Unity</div>
+                <div class="skill-star">Three.js</div>
+                <div class="skill-star">WebGL</div>
+            </div>
+        </section>
+        
+        <!-- About -->
+        <section id="about">
+            <h2 class="section-title">The Artificer</h2>
+            <div class="about-content">
+                <p>Weaving together the ancient art of storytelling with the modern craft of real-time rendering.</p>
+                <p>I specialize in creating immersive fantasy worlds through custom shaders, advanced materials, and breathtaking visual effects that transport players to realms beyond imagination.</p>
+                <p>Every pixel is enchanted with purpose. Every shader tells a story.</p>
+            </div>
+        </section>
+        
+        <!-- Contact -->
+        <section id="contact">
+            <h2 class="section-title">Summon Me</h2>
+            <div class="contact-links">
+                <a href="mailto:your.email@example.com" class="contact-link">Send Raven</a>
+                <a href="https://github.com/yourusername" class="contact-link">GitHub Grimoire</a>
+                <a href="https://twitter.com/yourusername" class="contact-link">Twitter Scrolls</a>
+                <a href="https://artstation.com/yourusername" class="contact-link">ArtStation Gallery</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Three.js Particle Magic
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+        
+        camera.position.z = 5;
+        
+        // Create magical particles
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        const colorArray = new Float32Array(particlesCount * 3);
+        
+        const colors = [
+            { r: 0.545, g: 0.361, b: 0.965 }, // purple
+            { r: 0.984, g: 0.749, b: 0.141 }, // gold
+            { r: 0.925, g: 0.286, b: 0.6 },   // pink
+            { r: 0.231, g: 0.510, b: 0.965 }  // blue
+        ];
+        
+        for(let i = 0; i < particlesCount * 3; i += 3) {
+            posArray[i] = (Math.random() - 0.5) * 20;
+            posArray[i + 1] = (Math.random() - 0.5) * 20;
+            posArray[i + 2] = (Math.random() - 0.5) * 20;
+            
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            colorArray[i] = color.r;
+            colorArray[i + 1] = color.g;
+            colorArray[i + 2] = color.b;
+        }
+        
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colorArray, 3));
+        
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.03,
+            vertexColors: true,
+            transparent: true,
+            opacity: 0.8,
+            blending: THREE.AdditiveBlending
+        });
+        
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+        
+        // Mouse interaction
+        let mouseX = 0;
+        let mouseY = 0;
+        
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+            mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+        });
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            particlesMesh.rotation.y += 0.0005;
+            particlesMesh.rotation.x += 0.0003;
+            
+            // Mouse influence
+            particlesMesh.rotation.y += mouseX * 0.0005;
+            particlesMesh.rotation.x += mouseY * 0.0005;
+            
+            // Floating effect
+            const positions = particlesGeometry.attributes.position.array;
+            for(let i = 1; i < positions.length; i += 3) {
+                positions[i] += Math.sin(Date.now() * 0.001 + i) * 0.001;
+            }
+            particlesGeometry.attributes.position.needsUpdate = true;
+            
+            renderer.render(scene, camera);
+        }
+        
+        animate();
+        
+        // Responsive resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+        
+        // Smooth scroll
+        const sections = document.querySelectorAll('section');
+        const navOrbs = document.querySelectorAll('.orb');
+        
+        navOrbs.forEach((orb, index) => {
+            orb.addEventListener('click', () => {
+                sections[index].scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        // Update active orb on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                    current = index;
+                }
+            });
+            
+            navOrbs.forEach((orb, index) => {
+                orb.classList.remove('active');
+                if (index === current) {
+                    orb.classList.add('active');
+                }
+            });
+        });
+        
+        // Project card mouse tracking
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = ((e.clientX - rect.left) / rect.width) * 100;
+                const y = ((e.clientY - rect.top) / rect.height) * 100;
+                card.style.setProperty('--x', `${x}%`);
+                card.style.setProperty('--y', `${y}%`);
+            });
+        });
+        
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+            observer.observe(card);
+        });
+        
+        document.querySelectorAll('.skill-star').forEach(star => {
+            star.style.opacity = '0';
+            star.style.transform = 'scale(0.8)';
+            star.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(star);
+        });
+
+        // Make cards clickable
+        document.querySelectorAll('.project-card[data-link]').forEach(card => {
+            card.addEventListener('click', () => {
+                window.location.href = card.dataset.link;
+            });
+        });
+    </script>
+</body>
+</html>
