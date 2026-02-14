@@ -29,7 +29,10 @@ renderer.setPixelRatio(window.devicePixelRatio);
 document.body.appendChild(renderer.domElement);
 
 // 4. Create a Mesh (Geometry + Material)
-const planeGeometry = new THREE.PlaneGeometry(3.5,7);
+// 992 * 1168 is the cat texture image
+const aspectRatioPlane = 992.0/1168.0;
+const heightPlan = 6.0;
+const planeGeometry = new THREE.PlaneGeometry(heightPlan * aspectRatioPlane,heightPlan);
 
 // texture
 const textureLoader = new THREE.TextureLoader();
@@ -97,13 +100,13 @@ const pbr = new THREE.MeshStandardMaterial({color: 'blue', metalness: 0.1, rough
 // torusGeometry.setAttribute('uv2', torusGeometry.attributes.uv);
 
 
-const kiyukMat = new THREE.MeshStandardMaterial({
-    map: kiyukAlbedo,
-    normalMap: kiyukNormal,
-    normalScale: new THREE.Vector2(1, 1),
-    roughnessMap: kiyukSpecular,
-    emissive: 0x000000,
-    emissiveIntensity: 1});
+// const kiyukMat = new THREE.MeshStandardMaterial({
+//     map: kiyukAlbedo,
+//     normalMap: kiyukNormal,
+//     normalScale: new THREE.Vector2(1, 1),
+//     roughnessMap: kiyukSpecular,
+//     emissive: 0x000000,
+//     emissiveIntensity: 1});
 
 // only works on webgl ( but i always prefer newer version, so in this case I am using WebGPU instead)
 // const kiyukCustomMat = new THREE.ShaderMaterial({
@@ -121,12 +124,12 @@ const kiyukMat = new THREE.MeshStandardMaterial({
 //const kiyukCustomMat = new THREE.MeshBasicMaterial();
 //kiyukCustomMat.colorNode = customShader();
 
-const plane = new THREE.Mesh(planeGeometry, kiyukMat);
+// const plane = new THREE.Mesh(planeGeometry, kiyukMat);
 
 // const torus = new THREE.Mesh(torusGeometry, pbrTex);
-plane.rotation.x = -Math.PI / 2;
-plane.rotation.x = 0;
-plane.position.set(-2,0,0);
+// plane.rotation.x = -Math.PI / 2;
+// plane.rotation.x = 0;
+// plane.position.set(-2,0,0);
 // scene.add(plane);
 
 

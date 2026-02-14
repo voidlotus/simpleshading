@@ -6,38 +6,67 @@
 
     <title>Viza665 - Digital Compositing</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Prism CSS with Tomorrow theme and plugins -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/toolbar/prism-toolbar.min.css" rel="stylesheet">
+
     <style>
         body { margin: 0; }
         canvas { display: block; }
+
+        .btn-custom-cullar {
+            background-color: #303F9F; /* Your desired color */
+            border-color: #303F9F;
+            color: #fff; /* Ensure text color is readable */
+        }
+
+        .btn-custom-cullar:hover,
+        .btn-custom-cullar:focus,
+        .btn-custom-cullar:active,
+        .btn-custom-cullar.active {
+            background-color: #5068ed; /* Darker color for hover/active states */
+            border-color: #5068ed;
+            color: #fff;
+        }
+
     </style>
 </head>
-<body>
+<body style="background-color: #607D8B; color: #FFFFFF;">
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<!-- Prism.js core and plugins from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/prism.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/toolbar/prism-toolbar.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.30.0/components/prism-javascript.min.js"></script>
 <center>
     <table border=0 cellspacing=5 cellpadding=5 width=90%>
 
         <tr>
             <td align=center>
-                <b><font size=5>Project 01 Basic Shader: Diffuse and Specular Effects with Normal Maps<br></font>
-                    <b><font size=6>Ignatius Alex Wijayanto<br></font>
+                <br><font size=5>Project 01 Basic Shader: Diffuse and Specular Effects with Normal Maps<br></font>
+                    <br><font size=6>Ignatius Alex Wijayanto<br></font>
             </td>
         </tr>
 
-        <!--<tr>-->
-        <!--<td align=center>-->
-        <!--<font size=4>-->
-        <!--<img src=01.jpg width=600><br>-->
-        <!--This is the last image of the project. The last image will always be top one. If you name your images 00.jpg, 01.jpg, it will be easy to remember the order. Always write some description, which will also be helpful for you to remember what the image was about.    -->
-        <!--</td>-->
-        <!--</tr> -->
-
+        <tr>
+            <td align=center>
+                <font size=4>
+                    <img src=/public/res/images/00.jpg width=600><br>
+                    Fixed the plane-texture aspect ratio
+                </font>
+            </td>
+        </tr>
         <tr>
             <td align=center>
                 <font size=4>
                     <img src=/public/res/images/img00.png width=600><br>
                     This is the first image of the project. The first image will always be bottom. The improvements will be added to top.
+                </font>
             </td>
         </tr>
 
@@ -46,21 +75,21 @@
 <hr>
 <h2>Resources</h2>
 <div class="card-deck">
-    <div class="card">
+    <div class="card" style="background-color: #3F51B5; color: #FFFFFF;">
         <img src="/public/res/tex/albedo.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Albedo Map</h5>
 <!--            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>-->
         </div>
     </div>
-    <div class="card">
+    <div class="card" style="background-color: #3F51B5; color: #FFFFFF;">
         <img src="/public/res/tex/normal.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Normal Map</h5>
 <!--            <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>-->
         </div>
     </div>
-    <div class="card">
+    <div class="card" style="background-color: #3F51B5; color: #FFFFFF;">
         <img src="/public/res/tex/specular.png" class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">Specular Map</h5>
@@ -69,17 +98,157 @@
     </div>
 </div>
 <hr>
-<div class="media">
-    <h2>ThreeJS Demo</h2>
-    <hr>
-    <h4>Features: </h4>
-    <div class="well">
-        <ul class="list-group list-group-flush">
-            <li class="list-group-item">Interactive lighting position using mouse X and Y movement</li>
-        </ul>
-    </div>
+<p>
+    <button class="btn btn-custom-cullar" type="button" data-toggle="collapse" data-target="#collapse1" aria-expanded="false" aria-controls="collapseExample">
+        Normal Map Prompt
+    </button>
+    <button class="btn btn-custom-cullar" type="button" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapseExample">
+        Albedo Map Prompt
+    </button>
+    <button class="btn btn-custom-cullar" type="button" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapseExample">
+        Specular Map Prompt
+    </button>
+</p>
+<div class="collapse" id="collapse1">
+    <div class="card card-body" style="background-color: #607D8B;">
 
-    <script type="module" src="/main.js"></script>
+        <pre >
+            <code class="language-javascript line-numbers">
+                Create a detailed normal map from this cat image. Emphasize the following surface details with accurate depth information:
+
+                FACIAL FEATURES:
+                - Subtle fur texture across the face with directional flow
+                - Raised nose bridge and nostril depth
+                - Eye socket depth and spherical curvature of the eyeballs
+                - Individual whiskers as thin raised elements
+                - Ear contours with inner concave surfaces
+
+                FUR TEXTURE:
+                - Fine short fur texture on face and body
+                - Directional fur flow patterns
+                - Slightly longer chest fur with more pronounced texture
+                - Variation in fur density between smooth and fluffy areas
+
+                BODY GEOMETRY:
+                - Rounded head and facial structure
+                - Muscular legs with subtle anatomical definition
+                - Paw pads as slightly raised soft surfaces
+                - Body contours showing natural cat anatomy
+
+                OBJECT SURFACE:
+                - Smooth plastic texture of the green stool
+                - Gentle curves of the stool seat
+                - Central hole with depth
+
+                OUTPUT SPECS:
+                - RGB normal map format (red=X, green=Y, blue=Z)
+                - Medium-high detail level appropriate for 3D rendering
+                - Balanced depth - not too flat, not overly exaggerated
+                - Clean edges between cat silhouette and background
+                - Neutral (0.5, 0.5, 1.0 / 128, 128, 255) for flat areas
+            </code>
+        </pre>
+    </div>
 </div>
+
+<div class="collapse" id="collapse2">
+    <div class="card card-body" style="background-color: #607D8B;">
+
+        <pre >
+            <code class="language-javascript line-numbers">
+                Create a clean albedo (diffuse color) map from this cat image. Remove all lighting, shadows, and specular highlights to show only pure surface colors:
+
+                COLOR INFORMATION TO PRESERVE:
+                - Gray-brown fur color on head, back, and body
+                - White fur on face (bridge of nose, muzzle, chin)
+                - White chest fur
+                - White paws/feet
+                - Pink nose leather
+                - Pink inner mouth/lips
+                - Natural eye color (greenish-yellow irises, black pupils)
+                - White whiskers
+                - Teal/green stool base color
+
+                CORRECTIONS TO APPLY:
+                - Remove all shadows (under chin, between legs, ear shadows)
+                - Eliminate highlights (on nose, eyes, stool surface)
+                - Flatten lighting to show uniform base colors
+                - Remove ambient occlusion darkening
+                - Eliminate reflected light color casts
+                - Normalize exposure across entire surface
+
+                TEXTURE DETAILS TO MAINTAIN:
+                - Subtle fur color variation (not lighting-based)
+                - Natural color transitions between gray and white areas
+                - Slight color variation in plastic stool (material color only)
+                - Keep individual fur strand color variety
+                - Preserve natural markings and patterns
+
+                OUTPUT SPECS:
+                - Pure diffuse color only - no lighting information
+                - Even, flat appearance as if lit by 100% neutral white light
+                - No black crush or white blowout
+                - Mid-tone values preserved
+                - Clean, game-ready albedo texture
+                - Background should be neutral or transparent
+
+                The result should look like a material swatch - showing what color the surfaces ARE, not how they're LIT.
+            </code>
+        </pre>
+    </div>
+</div>
+
+<div class="collapse" id="collapse3">
+    <div class="card card-body" style="background-color: #607D8B;">
+
+        <pre >
+            <code class="language-javascript line-numbers">
+                Create a grayscale specular/glossiness map from this cat image, where white = very shiny/specular, gray = slightly specular, and black = no specular reflection.
+
+                SPECULAR ASSIGNMENTS:
+
+                HIGH SPECULAR (WHITE - bright values 200-255):
+                - Cat eyes (cornea/wet surface of eyeballs) - very reflective
+                - Eye highlights area - maximum specularity
+                - Nose leather (wet appearance) - high specular
+
+                MEDIUM SPECULAR (MID-GRAY - values 100-150):
+                - Plastic stool surface - moderate shine
+                - Paw pads (slightly moist) - subtle specular
+
+                LOW SPECULAR (DARK GRAY - values 30-80):
+                - Short fur on face - minimal specular
+                - Body fur - very subtle shine
+                - Whiskers - slight specular
+
+                NO SPECULAR (BLACK - values 0-20):
+                - Fluffy/matte fur on chest - completely matte
+                - Longer fur areas - no specular
+                - Inner ears - matte
+                - White facial fur - matte
+                - Background - pure black
+
+                KEY REQUIREMENTS:
+                - Eyes should be the brightest/whitest area (primary specular hotspot)
+                - Nose should be bright but slightly less than eyes
+                - Most of the cat's fur should be very dark (nearly black) - fur is matte
+                - Stool should be uniform medium gray (plastic has moderate shine)
+                - Sharp, clean transitions between specular zones
+                - No color information - pure grayscale only
+                - Smooth gradients where appropriate (like on eye spheres)
+
+                OUTPUT: Grayscale map optimized for PBR specular workflow
+            </code>
+        </pre>
+    </div>
+</div>
+
+<hr>
+<div class="media" >
+    <h2>ThreeJS Demo</h2>
+    <script type="module" src="/main.js"></script>
+
+</div>
+
 </body>
 </html>
