@@ -146,8 +146,8 @@ directionalLight.castShadow = true;
 
 // point light
 // Create point light
-const pointLight = new THREE.PointLight(0xffffff, 2, 100);
-pointLight.position.set(0, 0, 2);
+const pointLight = new THREE.PointLight(0xffffff, 10, 4000);
+pointLight.position.set(0, 0, .4);
 scene.add(pointLight);
 
 // Add a visible sphere to show where the light is
@@ -201,14 +201,16 @@ function onMouseMove(event) {
     if (intersectPoint) {
         pointLight.position.x = intersectPoint.x;
         pointLight.position.y = intersectPoint.y;
-        pointLight.position.z = 2;
+        pointLight.position.z = .4;
+        // pointLight.position.z = intersectPoint.z;
 
         // FIX: Update custom shader light position with same 3D position
         if (customShaderInstance) {
             customShaderInstance.updateLightPosition(
                 intersectPoint.x,
                 intersectPoint.y,
-                2.0
+                // intersectPoint.z,
+                .4
             );
         }
     }
@@ -226,9 +228,9 @@ async function init(){
 
     // Load textures
     Promise.all([
-        textureLoader.loadAsync('res/tex/normal.png'),
+        textureLoader.loadAsync('res/tex/normal7.png'),
         textureLoader.loadAsync('res/tex/albedo.png'),
-        textureLoader.loadAsync('res/tex/specular.png')
+        textureLoader.loadAsync('res/tex/specular2.png')
         //textureLoader.loadAsync('background.jpg')
     ]).then(([normal, albedo, specular]) => {
         customShader.setTextures(normal, albedo, specular);
